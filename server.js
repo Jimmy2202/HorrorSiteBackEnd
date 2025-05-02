@@ -6,7 +6,12 @@ import apiRoute from "./routes/api.js";
 dotenv.config();
 const app = express();
 
-app.use(cors({ origin: "http://localhost:5173", credentials: true })); // Permite chamadas do frontend
+app.use(
+  cors({
+    origin: "https://jimmy2202.github.io/HorrorSiteFront",
+    credentials: true,
+  })
+); // Permite chamadas do frontend
 app.use(express.json());
 
 /*app.use(
