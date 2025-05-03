@@ -65,6 +65,27 @@ async function generateKeywordsFromVillain(vilain) {
   }
 }
 
+const fetchPrompt2 = async (prompt) => {
+  const completion = await openai.chat.completions.create({
+    messages: [
+      {
+        role: "user",
+        content: `GPT, com base no User Response de cada pergunta, retorne um filme que estiver listado na entrada de dados Movie e Overview,que o usuário mais se parece e o motivo. 
+        Responda apenas no formato JSON, exatamente assim: 
+        {"filme": "Nome do filme","motivo": "Explicação do motivo com base nas respostas. Capriche bem no motivo por favor}
+        Quando for explicar o motivo, sempre se refira ao usuário de forma direta com pronomes como você, sua, seu, etc, e de preferência, de maneira descolada e um pouco informal, mas explicando bem os motivos.
+        Na escolha do filme, sempre filmes que estejam disponíveis no campo Movie, nada fora disso.
+        Se não conseguir achar uma resposta por campos vazios, devolva: 
+        {"filme": "null","motivo": "null"} 
+        Não responda com aspas antes do JSON, nem absolutamente nada escrito, pois vou precisar utilizar esse json.
+        Retorne apenas esse JSON, apenas as chaves e o conteúdo dentro dela sem nenhum texto antes ou depois. Por favor, não retorne nenhum texto antes do json ou depois, apenas o JSON puro e limpo.
+        Respostas e Perguntas, e filmes: ${prompt}`,
+      },
+    ],
+    model: "gpt-4o",
+  });
+  return completion.choices[0];
+};
 const fetchPrompt = async (prompt) => {
   const completion = await openai.chat.completions.create({
     messages: [
@@ -121,6 +142,19 @@ router.post("/analyzeresponse", async (req, res) => {
     })
     .join("\n\n");
   const response = await fetchPrompt(prompt);
+  console.log(response);
+  res.json(response);
+});
+
+router.post("/analyzeresponse2", async (req, res) => {
+  const { resultfinal } = req.body;
+  console.log("RESULT" + resultfinal);
+  const prompt = resultfinal
+    .map((response) => {
+      return response;
+    })
+    .join("\n\n");
+  const response = await fetchPrompt2(prompt);
   console.log(response);
   res.json(response);
 });

@@ -7,6 +7,7 @@ dotenv.config();
 const app = express();
 
 const allowedOrigins = ["https://jimmy2202.github.io"];
+const allowedOrigins2 = ["http://localhost:5173"];
 
 app.use(
   cors({
